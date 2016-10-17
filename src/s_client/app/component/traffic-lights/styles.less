@@ -1,0 +1,75 @@
+@import '../../static/styles/_shared/retina.less';
+
+@path-from-shared: '../../../component';
+
+@traffic-light-green: #15cc35;
+@traffic-light-green-border: #17b230;
+@traffic-light-red: #fa6158;
+@traffic-light-red-border: #e14440;
+@traffic-light-yellow: #ffbe05;
+@traffic-light-yellow-border: #e2a100;
+@traffic-light-gray: #e5e5e5;
+@traffic-light-gray-border: #d3d3d3;
+
+.traffic-light() {
+  box-sizing: border-box;
+  display: inline-block;
+  background: white;
+  margin-right: 7px;
+  height: 12px;
+  width: 12px;
+  border-radius: 6px;
+  -webkit-app-region: no-drag;
+  &.enabled:hover {}
+  &.enabled:hover:active {
+    cursor: default;
+    -webkit-filter: brightness(92%);
+  }
+}
+
+.trafficlights {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex: 0 200px;
+  align-items: center;
+  -webkit-app-region: drag;
+}
+
+.lights {
+  display: inline-block;
+  position: relative;
+  left: 12px;
+  z-index: 1000;
+  -webkit-app-region: drag;
+  &:hover {
+    .light-yellow.enabled {
+      .at2x('@{path-from-shared}/traffic-lights/minimize.png', 10px, 10px);
+    }
+    .light-red.enabled {
+      .at2x('@{path-from-shared}/traffic-lights/close.png', 10px, 10px);
+    }
+    .light-green.enabled {
+      .at2x('@{path-from-shared}/traffic-lights/maximize.png', 10px, 10px);
+    }
+  }
+  > .light {
+    .traffic-light();
+    &.light-red {
+      background-color: @traffic-light-red;
+      border-color: @traffic-light-red-border;
+    }
+    &.light-yellow {
+      background-color: @traffic-light-yellow;
+      border-color: @traffic-light-yellow-border;
+    }
+    &.light-green {
+      background-color: @traffic-light-green;
+      border-color: @traffic-light-green-border;
+    }
+    &.disabled {
+      background-color: @traffic-light-gray;
+      border-color: @traffic-light-gray-border;
+    }
+  }
+}

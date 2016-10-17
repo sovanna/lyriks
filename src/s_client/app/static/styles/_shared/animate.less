@@ -1,0 +1,36 @@
+@import './variables.less';
+
+@-webkit-keyframes item {
+  from {
+    color: inherit;
+    opacity: inherit;
+    background-color: inherit;
+  }
+  to {
+    color: @grey1-color;
+    opacity: 0.8;
+    background-color: @content-bg;
+  }
+}
+
+@keyframes item {
+  from {
+    color: inherit;
+    opacity: inherit;
+    background-color: inherit;
+  }
+  to {
+    color: @grey1-color;
+    opacity: 0.8;
+    background-color: @content-bg;
+  }
+}
+
+.animeItem:hover {
+  -webkit-animation-duration: .3s;
+  animation-duration: .3s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-name: item;
+  animation-name: item;
+}
