@@ -8,6 +8,19 @@ const BrowserWindow = electron.BrowserWindow;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
+function listenningSpotify() {
+  const exec = require('child_process').exec;
+  const path = require('path');
+  const _spotifyScript = 'spotify.sh';
+  const _spotifyPath = path.join(__dirname, '../script', _spotifyScript);
+
+  exec(`nice -n 19 ${_spotifyPath}`, (err, stdout, stderr) => {
+    console.log('err:', err);
+    console.log('stdout:', stdout);
+    console.log('stderr:', stderr);
+  });
+}
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -31,6 +44,8 @@ function createWindow () {
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
     mainWindow.focus();
+
+    listenningSpotify();
   });
 
   // Emitted when the window is closed.
