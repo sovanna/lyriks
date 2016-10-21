@@ -10,22 +10,11 @@ module.exports = (opts) => {
     context: opts.context,
     entry: opts.entry,
     output: {
-      path: opts.outputPath,
-      publicPath: opts.publicPath ? opts.publicPath : '/',
+      path: opts.output.path,
+      publicPath: opts.output.publicPath ? opts.output.publicPath : '/',
       filename: `[name].[hash].js`,
       chunkFilename: `[name].chunk.[hash].js`
     },
-    target: 'electron-renderer',
-    resolve: {
-      extensions: [
-        '',
-        '.js',
-        '.jsx',
-        'react.js',
-        '.scss'
-      ]
-    },
-    devtool: opts.devtool ? opts.devtool : 'eval',
     module: {
       loaders: [{
         test: /\.js$/,
@@ -33,25 +22,25 @@ module.exports = (opts) => {
         loader: 'babel-loader'
       }, {
         test: /\.css$/,
-        loader: opts.modules_loader_css
+        loader: 'style-loader!css-loader?modules&importLoaders=1!postcss-loader'
       }, {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader?localIdentName=[path][name]---[local]---[hash:base64:5]&modules&importLoaders=1!postcss-loader!sass-loader',
+        loader: 'style-loader!css-loader?modules&importLoaders=1!postcss-loader!sass-loader',
         include: /node_modules\/react-flexbox-grid/
       }, {
         test: /\.less$/,
-        loader: 'style-loader!css-loader?localIdentName=[path][name]---[local]---[hash:base64:5]&modules&importLoaders=1!postcss-loader!less'
+        loader: 'style-loader!css-loader?modules&importLoaders=1!postcss-loader!less-loader'
       }, {
         test: /\.svg$/,
         loader: 'babel!svg-react'
       }, {
         test: /\.jpe?g$|\.gif$|\.png$/i,
         exclude: /node_modules/,
-        loader: opts.modules_loader_img
+        loader: 'url-loader?limit=10000'
       }, {
         test: /\.html$/,
         exclude: /node_modules/,
-        loader: opts.modules_loader_html
+        loader: 'html-loader'
       }, {
         test: /\.(eot|woff|woff2|ttf|svg)/,
         loader: 'url-loader?limit=30000&name=[name]-[hash].[ext]'
@@ -60,8 +49,28 @@ module.exports = (opts) => {
         loader: "json-loader"
       }]
     },
+    resolve: {
+      extensions: [
+        '',
+        '.js',
+        '.jsx'
+      ]
+    },
+    target: 'electron-renderer',
+    devtool: opts.devtool ? opts.devtool : 'eval',
     postcss: () => {
-      return opts.postcss;
+      return [
+        require('postcss-focus')(),
+        require('postcss-cssnext')({
+          browsers: [
+            'last 2 versions',
+            'IE > 10'
+          ]
+        }),
+        require('postcss-reporter')({
+          clearMessages: true
+        })
+      ];
     },
     plugins: opts.plugins.concat([
       new webpack.BannerPlugin(`-- ${_consts.pkg.author} --`, {}),

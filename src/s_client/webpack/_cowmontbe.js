@@ -2,6 +2,11 @@ const cowsay = require('cowsay');
 
 const _consts = require('./_consts');
 
+/**
+ * Print readable information based on project's package
+ * @param  {Function} afterCow callback called after log the 'cow'
+ * @return {void}
+ */
 module.exports = (afterCow) => {
   const {
     name,

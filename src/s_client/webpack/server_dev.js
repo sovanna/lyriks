@@ -9,11 +9,17 @@ const async = require('async');
 
 const _consts = require('./_consts');
 
+/**
+ * Read current directory and look for webpack configuration files
+ * following conf_dev_*.js pattern
+ * @param  {Function} done callback passing an Array of available conf files
+ * @return {Void}
+ */
 const get_conf_files = (done) => {
   let conf_files = [];
   let dir_path = path.join(__dirname, '.');
 
-  fs.readdir(dir_path, (err, files) => {
+  const _onReadDir = (err, files) => {
     let pending = files.length;
 
     if (!pending) {
@@ -21,7 +27,9 @@ const get_conf_files = (done) => {
     }
 
     _.each(files, (file) => {
-      fs.stat(path.join(dir_path, file), (err, stat) => {
+      const _path_file = path.join(dir_path, file);
+
+      fs.stat(_path_file, (err, stat) => {
         if (stat && !stat.isDirectory() && /^conf_dev_\w*\.js$/.test(file)) {
           conf_files.push(file.substring(0, file.indexOf('.js')));
         }
@@ -31,22 +39,41 @@ const get_conf_files = (done) => {
         }
       });
     });
-  });
+  };
+
+  fs.readdir(dir_path, _onReadDir);
 };
 
+/**
+ * Look through webpack configuration files and use webpack for each of them
+ * @param  {Function} done callback passing and Array of webpack compiler
+ * @return {Void}
+ */
 const get_compilers = (done) => {
   get_conf_files((confs) => {
     let compilers = [];
+
     _.each(confs, (conf) => {
       compilers.push(webpack(require(`./${conf}`)));
     });
+
     done(compilers);
   });
 };
 
+/**
+ * Start Webpack Dev Server for each Webpack Compiler (configuration founded)
+ * @param  {Function} done callback when everythings is done
+ * @return {Void}
+ */
 const start_apps = (done) => {
-  const map_compilers = (compiler) => {
-    let compiler_opts = compiler.options;
+  /**
+   * Load a Webpack Dev Server for each configuration founded
+   * @param  {Object} compiler from required webpack conf files
+   * @return {Array}  ArrayOf(Function) callback to use in a parralel async tasks
+   */
+  const _mapCompilers = (compiler) => {
+    let c_opts = compiler.options;
 
     return (callback) => {
       new WebpackDevServer(compiler, {
@@ -57,22 +84,20 @@ const start_apps = (done) => {
         stats: {
           colors: true
         }
-        // publicPath: compiler_opts.output.publicPath
-      }).listen(compiler_opts.__port, compiler_opts.__host, () => {
-        let name_context = compiler_opts.context;
-
+      }).listen(c_opts.__port, c_opts.__host, () => {
         console.log(
-          chalk.gray('\n------------------------------------------------------------') +
-          chalk.cyan(`\n[WDS] - ${_consts.pkg.name} start frontend ${name_context.substring(name_context.indexOf('/client/') + 8).toUpperCase()}`) +
-          chalk.gray('\n------------------------------------------------------------') +
-          chalk.cyan('\nSource: ') + chalk.white(name_context) +
-          chalk.cyan('\nExternal URL: ') + chalk.magenta(`http://${ip.address()}:${compiler_opts.__port}`) +
-          chalk.cyan('\nLocal URL: ') + chalk.magenta(`http://${compiler_opts.__host}:${compiler_opts.__port}`) +
-          chalk.cyan('\nApp URL: ') + chalk.magenta(`${compiler_opts.output.publicPath}`) +
-          chalk.cyan('\nEnv: ') + chalk.green('Development') +
-          chalk.gray('\n------------------------------------------------------------') +
+          chalk.gray('\n--------------------------------------------------') +
+          chalk.cyan(`\n[WDS] - ${_consts.pkg.name} started`) +
+          chalk.gray('\n--------------------------------------------------') +
+          chalk.cyan('\nExternal URL: ') +
+          chalk.magenta(`http://${ip.address()}:${c_opts.__port}`) +
+          chalk.cyan('\nLocal URL: ') +
+          chalk.magenta(`http://${c_opts.__host}:${c_opts.__port}`) +
+          chalk.cyan('\nApp URL: ') +
+          chalk.magenta(`${c_opts.output.publicPath}`) +
+          chalk.gray('\n--------------------------------------------------') +
           chalk.cyan('\n[HMR]: ') + chalk.green('Enabled') +
-          chalk.gray('\n------------------------------------------------------------')
+          chalk.gray('\n----------------------------------------------------')
         );
 
         callback(null);
@@ -80,15 +105,24 @@ const start_apps = (done) => {
     };
   };
 
-  get_compilers((compilers) => {
-    require('./_cowmontbe')(() => {
-      async.parallel(_.map(compilers, map_compilers), () => {
-        if (done) {
+  /**
+   * Load CowMontbe and immediately exec all compilers in an parralel async method
+   * @param  {Object} compilers
+   * @return {Void}
+   */
+  const _onGetCompilers = (compilers) => {
+    const _afterCow = () => {
+      async.parallel(_.map(compilers, _mapCompilers), () => {
+        if (Object.prototype.toString.call(done) === '[object Function]') {
           done();
         }
       });
-    });
-  });
+    };
+
+    require('./_cowmontbe')(_afterCow);
+  };
+
+  get_compilers(_onGetCompilers);
 };
 
 if (!module.parent) {

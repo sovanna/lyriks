@@ -4,32 +4,23 @@ const path = require('path');
 
 const name_app = 'app';
 const context_app = path.join(__dirname, '..', name_app);
-const context_build = path.join(`${__dirname}`, '../../../', `dist/static/${name_app}`);
+const context_build = path.join(
+  `${__dirname}`,
+  '../../../',
+  `dist/static/${name_app}`
+);
 
 module.exports = require('./conf_common')({
   env: 'production',
+  context: context_app,
   entry: [
     `./main.js`
   ],
-  context: context_app,
-  outputPath: context_build,
-  publicPath: `/static/${name_app}`,
-  modules_loader_css: 'style-loader!css-loader?localIdentName=[path][name]---[local]---[hash:base64:5]&modules&importLoaders=1!postcss-loader',
-  modules_loader_img: 'url-loader?limit=10000',
-  modules_loader_html: 'html-loader',
+  output: {
+    path: context_build,
+    publicPath: `/static/${name_app}`
+  },
   devtool: 'cheap-module-source-map',
-  postcss: [
-    require('postcss-focus')(),
-    require('postcss-cssnext')({
-      browsers: [
-        'last 2 versions',
-        'IE > 10'
-      ]
-    }),
-    require('postcss-reporter')({
-      clearMessages: true
-    })
-  ],
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
