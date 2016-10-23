@@ -36,17 +36,17 @@ tell application "Spotify"
         end if
 
         if player_state ≠ old_player_state and player_state is "playing" then
-            set current_complete_song_id to theSong & "|" & theArtist & "|" & theAlbum
-            do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
+            --set current_complete_song_id to "playing|" & theSong & "|" & theArtist & "|" & theAlbum
+            --do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
 
-            display notification player_state with title theSong subtitle theArtist
+            --display notification player_state with title theSong subtitle theArtist
         end if
 
         if player_state ≠ old_player_state and player_state is "paused" then
-            set current_complete_song_id to theSong & "|" & theArtist & "|" & theAlbum
-            do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
+            --set current_complete_song_id to theSong & "|" & theArtist & "|" & theAlbum
+            --do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
 
-            display notification player_state with title theSong subtitle theArtist
+            --display notification player_state with title theSong subtitle theArtist
         end if
 
         set old_player_state to player_state

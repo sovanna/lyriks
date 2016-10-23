@@ -21,6 +21,33 @@ function listenningSpotify() {
   });
 }
 
+function listenningSpotifySongFile() {
+  const fs = require('fs');
+  const path = require('path');
+  const _path_info_song = path.join(__dirname, '../script/tmp_current_song.txt');
+
+  let _current_info_song;
+
+  fs.watch(_path_info_song, {}, (eventType) => {
+    let _crs;
+
+    if (eventType !== 'change') {
+      return;
+    }
+
+    _crs = fs.createReadStream(_path_info_song);
+
+    _crs.on('data', (data) => {
+      const _s = data.toString('utf8').trim();
+
+      if (_current_info_song !== _s) {
+        _current_info_song = _s;
+        console.log(_current_info_song);
+      }
+    });
+  });
+}
+
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -46,6 +73,7 @@ function createWindow () {
     mainWindow.focus();
 
     listenningSpotify();
+    listenningSpotifySongFile();
   });
 
   // Emitted when the window is closed.
