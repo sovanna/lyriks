@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 osascript <<-EOF
 tell application "Spotify"
     set current_track_url to null
     set old_player_state to null
+    set current_complete_song_id to null
+    set current_path_posix to "$DIR/tmp_current_song.txt"
 
     repeat until application "Spotify" is not running
         set track_url to spotify url of current track
@@ -24,15 +28,25 @@ tell application "Spotify"
             set theSong to name of current track
             set theAlbum to album of current track
             set theArtist to artist of current track
-            display notification theArtist with title theSong subtitle theAlbum
+
+            set current_complete_song_id to theSong & "|" & theArtist & "|" & theAlbum
+            do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
+
+            display notification theAlbum with title theSong subtitle theArtist
         end if
 
         if player_state ≠ old_player_state and player_state is "playing" then
-            display notification player_state with title theSong subtitle theAlbum
+            set current_complete_song_id to theSong & "|" & theArtist & "|" & theAlbum
+            do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
+
+            display notification player_state with title theSong subtitle theArtist
         end if
 
         if player_state ≠ old_player_state and player_state is "paused" then
-            display notification player_state with title theSong subtitle theAlbum
+            set current_complete_song_id to theSong & "|" & theArtist & "|" & theAlbum
+            do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
+
+            display notification player_state with title theSong subtitle theArtist
         end if
 
         set old_player_state to player_state
