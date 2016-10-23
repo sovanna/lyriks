@@ -4,49 +4,11 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
+const _spotifyLoop = require('./spotifyLoop');
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
-
-function listenningSpotify() {
-  const exec = require('child_process').exec;
-  const path = require('path');
-  const _spotifyScript = 'spotify.sh';
-  const _spotifyPath = path.join(__dirname, '../script', _spotifyScript);
-
-  exec(`nice -n 19 ${_spotifyPath}`, (err, stdout, stderr) => {
-    console.log('err:', err);
-    console.log('stdout:', stdout);
-    console.log('stderr:', stderr);
-  });
-}
-
-function listenningSpotifySongFile() {
-  const fs = require('fs');
-  const path = require('path');
-  const _path_info_song = path.join(__dirname, '../script/tmp_current_song.txt');
-
-  let _current_info_song;
-
-  fs.watch(_path_info_song, {}, (eventType) => {
-    let _crs;
-
-    if (eventType !== 'change') {
-      return;
-    }
-
-    _crs = fs.createReadStream(_path_info_song);
-
-    _crs.on('data', (data) => {
-      const _s = data.toString('utf8').trim();
-
-      if (_current_info_song !== _s) {
-        _current_info_song = _s;
-        console.log(_current_info_song);
-      }
-    });
-  });
-}
 
 function createWindow () {
   // Create the browser window.
@@ -73,8 +35,10 @@ function createWindow () {
     mainWindow.focus();
 
     setTimeout(() => {
-      listenningSpotify();
-      listenningSpotifySongFile();
+      _spotifyLoop.startListeningSpotify();
+      _spotifyLoop.startWatchingCurrentSong((song) => {
+        mainWindow.webContents.send('spotify:song', song);
+      });
     }, 900);
   });
 
@@ -84,7 +48,7 @@ function createWindow () {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null
-  })
+  });
 }
 
 // This method will be called when Electron has finished
