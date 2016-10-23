@@ -72,8 +72,10 @@ function createWindow () {
     mainWindow.show();
     mainWindow.focus();
 
-    listenningSpotify();
-    listenningSpotifySongFile();
+    setTimeout(() => {
+      listenningSpotify();
+      listenningSpotifySongFile();
+    }, 900);
   });
 
   // Emitted when the window is closed.
