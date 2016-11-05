@@ -73,7 +73,12 @@
   },
   "dependencies": {
     "electron": "^1.4.3",
+    "es6-promise": "^4.0.5",
     "flexboxgrid": "^6.3.1",
+    "got": "^6.5.0",
+    "install": "^0.8.2",
+    "isomorphic-fetch": "^2.2.1",
+    "npm": "^3.10.9",
     "react": "^15.3.2",
     "react-cookie": "^0.4.8",
     "react-document-title": "^2.0.2",
@@ -87,6 +92,7 @@
     "redux": "^3.6.0",
     "redux-thunk": "^2.1.0",
     "request": "^2.75.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "whatwg-fetch": "^1.0.0"
   }
 }
