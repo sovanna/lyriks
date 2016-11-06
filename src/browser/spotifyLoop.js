@@ -2,8 +2,10 @@ const fs = require('fs');
 const exec = require('child_process').exec;
 const path = require('path');
 
+const _path_script = path.join(__dirname, './script');
+
 const _startListeningSpotify = () => {
-  const _script = path.join(__dirname, '../script', 'spotify.sh');
+  const _script = path.join(_path_script, 'spotify.sh');
 
   exec(`nice -n 19 ${_script}`, (err, stdout, stderr) => {
     console.log('err:', err);
@@ -13,7 +15,7 @@ const _startListeningSpotify = () => {
 }
 
 const _startWatchingCurrentSong = (callback) => {
-  const _song = path.join(__dirname, '../script', 'tmp_current_song.txt');
+  const _song = path.join(_path_script, 'tmp_current_song.txt');
 
   let _info;
   let _changing = false;

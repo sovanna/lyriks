@@ -10,8 +10,8 @@ const port = 7001;
 const context_app = path.join(__dirname, '..', name_app);
 const context_build = path.join(
   `${__dirname}`,
-  '../../../',
-  `dist/static/${name_app}`
+  '../../',
+  `static/`
 );
 
 module.exports = require('./conf_common')({
@@ -36,10 +36,10 @@ module.exports = require('./conf_common')({
     }),
     new webpack_plugins.html({
       template: `index.html`,
-      filename: `../../src/browser/index.html`,
+      filename: `../../index.html`,
       inject: true
     }),
-    new webpack_plugins.exportFiles(`../../src/browser/index.html`),
+    new webpack_plugins.exportFiles(`../../index.html`),
     new ECR()
   ]
 });

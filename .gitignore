@@ -72,7 +72,8 @@ js/bundle.js
 js/bundle.min.js
 npm-debug.log
 
-src/script/tmp_current_song.txt
+tmp_current_song.txt
+browser/static
 
 # Vagrant
 .vagrant/

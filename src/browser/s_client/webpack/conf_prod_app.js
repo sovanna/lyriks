@@ -6,8 +6,8 @@ const name_app = 'app';
 const context_app = path.join(__dirname, '..', name_app);
 const context_build = path.join(
   `${__dirname}`,
-  '../../../',
-  `dist/static/${name_app}`
+  '../../',
+  `static/`
 );
 
 module.exports = require('./conf_common')({
@@ -18,7 +18,7 @@ module.exports = require('./conf_common')({
   ],
   output: {
     path: context_build,
-    publicPath: `/static/${name_app}`
+    publicPath: `/static/`
   },
   devtool: 'cheap-module-source-map',
   plugins: [
@@ -27,8 +27,8 @@ module.exports = require('./conf_common')({
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new webpack_plugins.clean([`static/${name_app}`], {
-      root: path.join(`${__dirname}`, '../../../', `dist`),
+    new webpack_plugins.clean([`static/`], {
+      root: path.join(`${__dirname}`, '../../'),
       verbose: true,
       dry: false
     }),
@@ -47,7 +47,7 @@ module.exports = require('./conf_common')({
     }),
     new webpack_plugins.html({
       template: 'index.html',
-      filename: path.join(`${__dirname}`, '../../../', `dist/index.html`),
+      filename: path.join(`${__dirname}`, '../../', `index.html`),
       minify: {
         removeComments: true,
         collapseWhitespace: false,
