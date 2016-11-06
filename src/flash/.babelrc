@@ -1,0 +1,9 @@
+{
+  "presets": ["es2015", "stage-2"],
+  "env": {
+    // only enable it when process.env.NODE_ENV is 'development' or undefined
+    "development": {
+      "plugins": []
+    }
+  }
+}
