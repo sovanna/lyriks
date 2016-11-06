@@ -6,7 +6,7 @@ import ECR from 'electron-connect-replacement-webpack-plugin';
 
 const name_app = 'app';
 const host = 'localhost';
-const port = 7001;
+const port = 5000;
 const context_app = path.join(__dirname, '..', name_app);
 const context_build = path.join(
   `${__dirname}`,

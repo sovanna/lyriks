@@ -1,6 +1,5 @@
 const fs = require('fs');
-const exec = require('child_process').exec;
-// const spawn = require('child_process').spawn;
+const spawn = require('child_process').spawn;
 const path = require('path');
 
 const _path_script = path.join(__dirname, './script');
@@ -8,30 +7,23 @@ const _path_script = path.join(__dirname, './script');
 const _child_process = [];
 
 const _startListeningSpotify = () => {
-  const _script = path.join(_path_script, '/spotify.sh');
-
+  const _oascript = `${_path_script}/spotify.sh`;
 
   _child_process.forEach((_child) => {
     _child.kill();
   });
 
-  _child_process.push(exec(`nice -n 19 ${_script}`));
-
-  // exec(`nice -n 19 ${_script}`, (err, stdout, stderr) => {
-  //   console.log('err:', err);
-  //   console.log('stdout:', stdout);
-  //   console.log('stderr:', stderr);
-  // });
+  _child_process.push(spawn('nice', ['-n', '20', _oascript]));
 }
 
 const _startWatchingCurrentSong = (callback) => {
-  const _song = path.join(_path_script, 'tmp_current_song.txt');
+  const _song_file = `${_path_script}/tmp_current_song.txt`;
 
-  let _info;
+  let _current_music;
   let _changing = false;
 
-  fs.watch(_song, {}, (eventType) => {
-    let _crs;
+  fs.watch(_song_file, {}, (eventType) => {
+    let _stream_file;
 
     if (_changing) {
       return;
@@ -41,24 +33,34 @@ const _startWatchingCurrentSong = (callback) => {
       return;
     }
 
-    _crs = fs.createReadStream(_song);
+    _stream_file = fs.createReadStream(_song_file);
 
-    _crs.on('data', (data) => {
-      const _s = data.toString('utf8').trim();
+    _stream_file.on('data', (data) => {
+      const _song = data.toString('utf8').trim();
 
-      if (_info !== _s) {
+      if (_current_music && _current_music !== _song) {
         _changing = true;
-        _info = _s;
+        _current_music = _song;
 
-        callback(_info);
+        callback(_current_music);
       }
     });
 
-    _crs.on('end', () => {
+    _stream_file.on('end', () => {
       _changing = false;
     })
   });
 }
+
+function onExit() {
+  _child_process.forEach((_child) => {
+    _child.kill();
+  });
+}
+
+process.on('exit', onExit);
+process.on('SIGINT', onExit);
+process.on('uncaughtException', onExit);
 
 module.exports = {
   startListeningSpotify: _startListeningSpotify,
