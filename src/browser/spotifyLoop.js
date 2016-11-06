@@ -38,7 +38,7 @@ const _startWatchingCurrentSong = (callback) => {
     _stream_file.on('data', (data) => {
       const _song = data.toString('utf8').trim();
 
-      if (_current_music && _current_music !== _song) {
+      if (_current_music !== _song) {
         _changing = true;
         _current_music = _song;
 

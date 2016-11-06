@@ -10,32 +10,23 @@ import {
 
 import {
   getLyricsIfNeeded,
-  sockethor
+  socketConnection
 } from '../redux/actions/actions_home';
 
 const mapStateToProps = (state) => {
-  // if (_lyrics) {
-  //   try {
-  //     _lyrics = _lyrics.message.body.lyrics.lyrics_body;
-  //     _lyrics = _lyrics.replace(/\*+\sThis\sLyrics\sis\sNOT\sfor\sCommercial\suse\s\*+/gi, '');
-  //     _lyrics = _lyrics.replace(/\(\d+\)/gi, '');
-  //   } catch (e) {
-  //     console.error(e);
-  //     _lyrics = null;
-  //   }
-  // }
+  const _home = state.home;
 
   return {
-    lyrics: state.home.socket_lyriks,
-    title: state.home.title,
-    artist: state.home.artist
+    lyrics: _home.socket_lyriks,
+    title: _home.title,
+    artist: _home.artist
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onInit: () => {
-      dispatch(sockethor());
+      dispatch(socketConnection());
     },
 
     onSearchLyrics: (search) => {
@@ -87,11 +78,9 @@ class Home extends React.Component {
       artist
     } = this.props;
 
-    let _lyrics;
-
-    if (lyrics) {
-      _lyrics = lyrics.replace(/\n/gi, '<br />')
-    }
+    const _lyrics_row = lyrics ? lyrics.split('\n').filter((row) => {
+      return row !== '\n';
+    }) : [];
 
     return (
       <Layout documentTitle="Home">
@@ -100,7 +89,13 @@ class Home extends React.Component {
           <h2 style={{ fontSize: '12px'}}>{artist}</h2>
         </hgroup>
 
-        <p style={_STYLE.content} dangerouslySetInnerHTML={{__html: _lyrics}} />
+        <div style={_STYLE.content}>
+          {_lyrics_row.map((row, key) => {
+            return (
+              <p key={key}>{row}</p>
+            );
+          })}
+        </div>
       </Layout>
     );
   }

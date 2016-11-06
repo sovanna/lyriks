@@ -2,7 +2,7 @@ import {
   REQUEST_LYRICS,
   REQUEST_LYRICS_SUCCESS,
   REQUEST_LYRICS_ERROR,
-  INIT_SOCKET,
+  SOCKET_INIT,
   SOCKET_ID,
   SOCKET_LYRIKS,
   IRON_CALLED
@@ -12,9 +12,11 @@ const _initialStateLyrics = {
   type: null,
   isFetching: false,
   error: true,
-  lyrics: null,
   title: '',
-  artist: ''
+  artist: '',
+  socket_init: false,
+  socket_id: null,
+  socket_lyriks: null
 };
 
 export default function home(state = _initialStateLyrics, action) {
@@ -34,20 +36,10 @@ export default function home(state = _initialStateLyrics, action) {
         lyrics: null
       });
 
-    case REQUEST_LYRICS_SUCCESS:
+    case SOCKET_INIT:
       return Object.assign({}, state, {
         type: action.type,
-        isFetching: false,
-        error: null,
-        lyrics: action.lyrics,
-        title: action.title,
-        artist: action.artist
-      });
-
-    case INIT_SOCKET:
-      return Object.assign({}, state, {
-        type: action.type,
-        socket_init: action.init
+        socket_init: action.socket_init
       });
 
     case SOCKET_ID:
@@ -65,7 +57,7 @@ export default function home(state = _initialStateLyrics, action) {
     case IRON_CALLED:
       return Object.assign({}, state, {
         type: action.type
-      })
+      });
 
     default:
       return state;
