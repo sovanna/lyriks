@@ -21,8 +21,6 @@ _app.post('/flash', (req, res) => {
   const _body = req.body;
   const _client = _io.sockets.connected[_body.client_id];
 
-  console.log(_body.lyrics);
-
   if (_client) {
     _client.emit('lyriks', _body.lyrics);
     return res.status(200).send('send lyriks back to client\n');
