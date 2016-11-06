@@ -2,6 +2,10 @@ import {
   REQUEST_LYRICS,
   REQUEST_LYRICS_SUCCESS,
   REQUEST_LYRICS_ERROR,
+  INIT_SOCKET,
+  SOCKET_ID,
+  SOCKET_LYRIKS,
+  IRON_CALLED
 } from '../actions/actions_type';
 
 const _initialStateLyrics = {
@@ -39,6 +43,29 @@ export default function home(state = _initialStateLyrics, action) {
         title: action.title,
         artist: action.artist
       });
+
+    case INIT_SOCKET:
+      return Object.assign({}, state, {
+        type: action.type,
+        socket_init: action.init
+      });
+
+    case SOCKET_ID:
+      return Object.assign({}, state, {
+        type: action.type,
+        socket_id: action.socket_id
+      });
+
+    case SOCKET_LYRIKS:
+      return Object.assign({}, state, {
+        type: action.type,
+        socket_lyriks: action.socket_lyriks
+      });
+
+    case IRON_CALLED:
+      return Object.assign({}, state, {
+        type: action.type
+      })
 
     default:
       return state;

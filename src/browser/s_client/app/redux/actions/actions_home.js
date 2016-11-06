@@ -1,12 +1,19 @@
-import 'whatwg-fetch';
+import 'isomorphic-fetch';
 
 const got = require('got');
 const _ = require('underscore');
+const io = require('socket.io-client');
+
+let _client = null;
 
 import {
   REQUEST_LYRICS,
   REQUEST_LYRICS_SUCCESS,
   REQUEST_LYRICS_ERROR,
+  INIT_SOCKET,
+  SOCKET_ID,
+  SOCKET_LYRIKS,
+  IRON_CALLED
 } from './actions_type';
 
 import {
@@ -99,18 +106,48 @@ function musixmatch_lyrics(track_id) {
   });
 }
 
-function getLyrics(search) {
+function ironSearch(title, artist, client_id) {
+  return fetch('http://localhost:5001/shit', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'content-type': 'application/json'
+    },
+    json: true,
+    mode: 'no-cors',
+    body: JSON.stringify({
+      title,
+      artist,
+      client_id
+    })
+  })
+  .catch(error => {
+    return Promise.reject(error);
+  });
+}
+
+function getLyrics(search, client_id) {
   return dispatch => {
     dispatch(requestLyrics());
 
     const _search = search.split('|');
-    const _url = `${MUSIXMATCH_API_URL}track.search`;
+    // const _url = `${MUSIXMATCH_API_URL}track.search`;
 
     if (!_search || !_search.length ||_search.length < 2) {
       return Promise.reject('Invalid search');
     }
 
-    return musixmatch_search(search, _search[0], _search[1])
+    return ironSearch(_search[0].replace(/acoustic/gi, '').replace(/ - /gi, ''), _search[1], client_id)
+      .then(() => {
+        return dispatch({
+          type: IRON_CALLED
+        });
+      })
+      .catch(error => {
+        return dispatch(requestLyricsError(error));
+      })
+
+    /*return musixmatch_search(search, _search[0], _search[1])
       .then(track => {
         return musixmatch_lyrics(track.track_id)
           .then(response => {
@@ -122,12 +159,45 @@ function getLyrics(search) {
       })
       .catch(error => {
         return dispatch(requestLyricsError(error));
-      });
+      });*/
   };
+}
+
+function shouldInitSocketClient(state) {
+  return state.home && !state.home.socket_init;
 }
 
 export function getLyricsIfNeeded(search) {
   return (dispatch, getState) => {
-    return dispatch(getLyrics(search));
+    return dispatch(getLyrics(search, getState().home.socket_id));
   };
+}
+
+export function sockethor() {
+  return (dispatch, getState) => {
+    if (shouldInitSocketClient(getState())) {
+      _client = io('http://localhost:5002');
+
+      _client.on('register', (socket_id) => {
+        dispatch({
+          type: SOCKET_ID,
+          socket_id
+        });
+      });
+
+      _client.on('lyriks', (socket_lyriks) => {
+        return dispatch({
+          type: SOCKET_LYRIKS,
+          socket_lyriks
+        })
+      });
+
+      return dispatch({
+        type: INIT_SOCKET,
+        init: true
+      });
+    }
+  };
+
+  return Promise.resolve();
 }

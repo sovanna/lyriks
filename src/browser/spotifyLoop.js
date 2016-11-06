@@ -1,17 +1,27 @@
 const fs = require('fs');
 const exec = require('child_process').exec;
+// const spawn = require('child_process').spawn;
 const path = require('path');
 
 const _path_script = path.join(__dirname, './script');
 
-const _startListeningSpotify = () => {
-  const _script = path.join(_path_script, 'spotify.sh');
+const _child_process = [];
 
-  exec(`nice -n 19 ${_script}`, (err, stdout, stderr) => {
-    console.log('err:', err);
-    console.log('stdout:', stdout);
-    console.log('stderr:', stderr);
+const _startListeningSpotify = () => {
+  const _script = path.join(_path_script, '/spotify.sh');
+
+
+  _child_process.forEach((_child) => {
+    _child.kill();
   });
+
+  _child_process.push(exec(`nice -n 19 ${_script}`));
+
+  // exec(`nice -n 19 ${_script}`, (err, stdout, stderr) => {
+  //   console.log('err:', err);
+  //   console.log('stdout:', stdout);
+  //   console.log('stderr:', stderr);
+  // });
 }
 
 const _startWatchingCurrentSong = (callback) => {

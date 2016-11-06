@@ -8,6 +8,8 @@ tell application "Spotify"
     set old_player_state to null
     set current_complete_song_id to null
     set current_path_posix to "$DIR/tmp_current_song.txt"
+    set current_artist to null
+    set current_song to null
 
     repeat until application "Spotify" is not running
         set track_url to spotify url of current track
@@ -32,7 +34,11 @@ tell application "Spotify"
             set current_complete_song_id to theSong & "|" & theArtist & "|" & theAlbum
             do shell script "echo " & quoted form of current_complete_song_id & " > " & current_path_posix
 
-            display notification theAlbum with title theSong subtitle theArtist
+            if current_artist ≠ theArtist and current_song ≠ theSong then
+                set current_artist to theArtist
+                set current_song to theSong
+                display notification theAlbum with title theSong subtitle theArtist
+            end if
         end if
 
         if player_state ≠ old_player_state and player_state is "playing" then
