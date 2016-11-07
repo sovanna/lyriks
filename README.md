@@ -22,48 +22,48 @@ Basically, the desktop app listen for Spotify current track. Then the desktop ap
 
 ```
 +---------------+
-|               |               +--------------------+
-|    Spotify    |               |                    |
-|               |               |     API Service    |
-+-----+---------+               |                    |
-      ^                         |  (codename: Iron)  +-----------------------+
-      |                         |     (Flask, RQ)    |                       |
-      | listen                  |                    |                       | 5. Broker RQ song
-      |                         +--------+-----------+                       |
-  +---+-----------+                      ^                                   v
-  |               |                      |                               +---+------------------+
-  |  applescript  +<------+              |                               |                      |
-  |               |       |              |                               |   Worker Service     |
-  +---+-----------+       |              | 4. -X POST -d song iron/shit  |                      |     6. => Scrap like a
-      |                   |              |                               |                      |           f****** schlag
-      |                   |              |                               |  (codename: Rogue)   +----------------------------> ???? (Target of hell)
-      | write song        | 1. launch    |                               |    ( Flask, RQ)      |       7. <= lyrics
-      |                   |              |                               |                      |
-      v                +--+--------------+------------+                  +--------+-------------+
-  +---+-----------+    |                              |                           |
-  |               |    |          Desktop App         |                           |
-  | tmp_file.txt  |    | (electron, react, redux ...) |                           | 8. -X POST -d lyrics flash/flash
-  |               |    |                              |                           |
-  +---+-----------+    +--+----+----+-----------------+                           |
-      ^                   |    |    ^                                             v
-      |                   |    |    |                        +--------------------+----+
-      |   2. <= watch     |    |    |     1. => subscribe    |                         |
-      +---------------- --+    |    +----------------------->+    Notifier Service     |
-         3. => new song        |         9. <= lyrics        |                         |
-                               |                             |    (codename: Flash)    |
-                               |                             |  (expressJS, socket.io) |
-                               |                             |                         |
-                               |                             +-------------------------+
-                               |
-                               |
-           ---                 |
-          /   \                v
-          \   /
-           ---      10. SING like a bi*c*
-           | |
-           | |
-           | |
-           +-+
+|               |                             +--------------------+
+|    Spotify    |                             |                    |
+|               |                             |     API Service    |
++-----+---------+                             |                    |
+      ^                                       |  (codename: Iron)  +------------------------------------+
+      |                                       |     (Flask, RQ)    |                                    |
+      | listen                                |                    |                                    | 5. Broker RQ song
+      |                                       +--------+-----------+                                    |
+  +---+-----------+                                    ^                                                v
+  |               |                                    |                                            +---+------------------+
+  |  applescript  +<------------+                      |                                            |                      |
+  |               |             |                      |                                            |   Worker Service     |
+  +---+-----------+             |                      | 4. -X POST -d song iron/shit               |                      |     6. => Scrap like a
+      |                         |                      |                                            |                      |           f****** schlag
+      |                         |                      |                                            |  (codename: Rogue)   +----------------------------> ???? (Target of hell)
+      | write song              | 1. launch            |                                            |    ( Flask, RQ)      |       7. <= lyrics
+      |                         |                      |                                            |                      |
+      v                      +--+----------------------+------------+                               +--------+-------------+
+  +---+-----------+          |                                      |                                        |
+  |               |          |               Desktop App            |                                        |
+  | tmp_file.txt  |          |        (electron, react, redux ...)  |                                        | 8. -X POST -d lyrics flash/flash
+  |               |          |                                      |                                        |
+  +---+-----------+          +--+-------------+-----------------+---+                                        |
+      ^                         |             |                 ^                                            v
+      |                         |             |                 |                                +-----------+-------------+
+      |   2. <= watch           |             |                 |     1. => subscribe            |                         |
+      +-------------------------+             |                 +------------------------------->+    Notifier Service     |
+         3. => new song                       |                       9. <= lyrics               |                         |
+                                              |                                                  |    (codename: Flash)    |
+                                              |                                                  |  (expressJS, socket.io) |
+                                              |                                                  |                         |
+                                              |                                                  +-------------------------+
+                                              |
+                                              |
+                           ---                |
+                          /   \               v
+                          \   /
+                           ---      10. SING like a bi*c*
+                           | |
+                           | |
+                           | |
+                           +-+
 ```
 
 ## WARNING :warning:
