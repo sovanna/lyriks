@@ -78,9 +78,7 @@ class Home extends React.Component {
       artist
     } = this.props;
 
-    const _lyrics_row = lyrics ? lyrics.split('\n').filter((row) => {
-      return row !== '\n';
-    }) : [];
+    const _lyrics_row = lyrics ? lyrics.split('\n') : [];
 
     return (
       <Layout documentTitle="Home">
@@ -92,7 +90,7 @@ class Home extends React.Component {
         <div style={_STYLE.content}>
           {_lyrics_row.map((row, key) => {
             return (
-              <p key={key}>{row}</p>
+              <p key={key}>{row === '\n' ? (<br />) : row}</p>
             );
           })}
         </div>

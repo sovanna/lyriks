@@ -90,10 +90,12 @@ function socketRegisterClient(socket_id) {
   };
 }
 
-function socketReceiveLyrics(socket_lyriks) {
+function socketReceiveLyrics(song) {
   return {
     type: SOCKET_LYRIKS,
-    socket_lyriks
+    socket_lyriks: song.lyrics,
+    title: song.title,
+    artist: song.artist
   };
 }
 
@@ -116,8 +118,8 @@ export function socketConnection() {
         dispatch(socketRegisterClient(ID));
       });
 
-      _client.on('lyriks', (lyriks) => {
-        return dispatch(socketReceiveLyrics(lyriks))
+      _client.on('song', (song) => {
+        return dispatch(socketReceiveLyrics(song))
       });
 
       return dispatch(socketInit);

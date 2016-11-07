@@ -22,7 +22,12 @@ _app.post('/flash', (req, res) => {
   const _client = _io.sockets.connected[_body.client_id];
 
   if (_client) {
-    _client.emit('lyriks', _body.lyrics);
+    _client.emit('song', {
+      lyrics: _body.lyrics,
+      title: _body.title,
+      artist: _body.artist
+    });
+
     return res.status(200).send('send lyriks back to client\n');
   }
 

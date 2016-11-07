@@ -51,7 +51,9 @@ export default function home(state = _initialStateLyrics, action) {
     case SOCKET_LYRIKS:
       return Object.assign({}, state, {
         type: action.type,
-        socket_lyriks: action.socket_lyriks
+        socket_lyriks: action.socket_lyriks,
+        title: action.title,
+        artist: action.artist
       });
 
     case IRON_CALLED:
