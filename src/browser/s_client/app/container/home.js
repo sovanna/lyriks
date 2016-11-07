@@ -65,7 +65,26 @@ class Home extends React.Component {
     this.props.onInit();
 
     ipcRenderer.on('spotify:song', (event, song) => {
+      const _search = song.split('|');
+
+      let _title;
+      let _artist;
+
+      if (!_search || !_search.length ||_search.length < 2) {
+        return;
+      }
+
+      _title = _search[0];
+      _artist = _search[1];
+
+      if (_title === this._title && _artist === this._artist) {
+        return;
+      }
+
       if (this.props.onSearchLyrics) {
+        this._title = _title;
+        this._artist = _artist;
+
         this.props.onSearchLyrics(song);
       }
     });
