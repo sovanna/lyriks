@@ -1,0 +1,63 @@
+version: "2"
+
+services:
+
+  iron:
+    build:
+      context: ./src/iron
+      dockerfile: Dockerfile.iron
+    image: sovanna/lyriks-iron
+    expose:
+      - "5001"
+    ports:
+      - "5001:5001"
+    depends_on:
+      - redis
+    networks:
+      lyriks:
+        ipv4_address: "172.18.0.3"
+
+  rogue:
+    build:
+      context: ./src/iron
+      dockerfile: Dockerfile.rogue
+    image: sovanna/lyriks-rogue
+    depends_on:
+      - redis
+    networks:
+      lyriks:
+        ipv4_address: "172.18.0.4"
+
+  flash:
+    build:
+      context: ./src/flash
+      dockerfile: Dockerfile
+    image: sovanna/lyriks-flash
+    expose:
+      - "5002"
+    ports:
+      - "5002:5002"
+    networks:
+      lyriks:
+        ipv4_address: "172.18.0.5"
+
+  redis:
+    image: redis
+    expose:
+      - "6379"
+    networks:
+      lyriks:
+        ipv4_address: "172.18.0.6"
+
+networks:
+  lyriks:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_ip_masquerade: "true"
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.host_binding_ipv4: "0.0.0.0"
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.18.0.0/16"
+          gateway: "172.18.0.1"

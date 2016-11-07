@@ -1,7 +1,7 @@
 {
   "name": "lyriks",
   "version": "1.0.0",
-  "description": "A minimal application to displays Lyrics from Spotify throught Musixmatch",
+  "description": "A minimal application to displays Lyrics from Spotify",
   "main": "./main.js",
   "scripts": {
     "start": "NODE_ENV=development ./node_modules/.bin/nodemon --watch main.js --watch spotifyLoop.js --watch s_client/webpack -e js ./s_client/webpack/server_dev.js --exec babel-node",
@@ -10,8 +10,7 @@
   "repository": "https://github.com/sovanna/lyriks",
   "keywords": [
     "Spotify",
-    "Lyrics",
-    "Musixmatch"
+    "Lyrics"
   ],
   "author": "Sovanna Hing <sovanna.hing@gmail.com",
   "license": "MIT",

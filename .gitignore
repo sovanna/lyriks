@@ -73,6 +73,7 @@ js/bundle.min.js
 npm-debug.log
 
 tmp_current_song.txt
+worker.py
 browser/static
 
 # Vagrant
