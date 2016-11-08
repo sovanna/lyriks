@@ -6,7 +6,7 @@ A minimal application to displays Lyrics from Spotify :star2:
 
 ## Why ?
 
-Cause Spotify is no more allows us to sing like a crazy b**ch throught their own application.
+Cause Spotify no more allows us to sing like a crazy b**ch throught their own application.
 Frustrated :disappointed:, I constantly search on google the lyrics to sing.. but it's a bit cumbersome :scream:
 
 So I decided to build a little application to do it automatically.
